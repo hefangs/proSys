@@ -38,11 +38,11 @@
     <!-- dialog -->
 
     <el-dialog :title="tmForm.id ? '修改品牌' : '新增品牌'" :visible.sync="dialogFormVisible">
-      <el-form style="width: 80%" :model="tmForm">
-        <el-form-item label="品牌名称" label-width="100px">
+      <el-form ref="ruleForm" style="width: 80%" :model="tmForm" :rules="rules">
+        <el-form-item label="品牌名称" label-width="100px" prop="tmName">
           <el-input v-model="tmForm.tmName" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="品牌LOGO" label-width="100px">
+        <el-form-item label="品牌LOGO" label-width="100px" prop="logoUrl">
           <el-upload
             class="avatar-uploader"
             action="dev-api/admin/product/fileUpload"
@@ -77,6 +77,14 @@ export default {
       tmForm: {
         tmName: '',
         logoUrl: ''
+      },
+      // dialog的验证规则
+      rules: {
+        tmName: [
+          { required: true, message: '请输入品牌名称', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'change' }
+        ],
+        logoUrl: [{ required: true, message: '请选择图片', trigger: 'change' }]
       }
     }
   },
@@ -136,29 +144,32 @@ export default {
       this.tmForm = { ...row }
     },
     // dialog对话框中的【添加】按钮
-    async addOrUpdateTradeMark() {
-      this.dialogFormVisible = false
-      const result = await this.$API.tradeMark.reqAddOrUpdateTradeMark(this.tmForm)
-      // console.log(result)
-      // if (result.code === 200) {
-      //   this.$message(this.tmForm.id ? '修改品牌成功' : '新增品牌成功')
-      // }
-      if (result.code === 200) {
-        if (this.tmForm.id) {
-          this.$notify({
-            // title: '成功',
-            message: '修改品牌成功',
-            type: 'success'
-          })
+    addOrUpdateTradeMark() {
+      this.$refs.ruleForm.validate(async valid => {
+        if (valid) {
+          this.dialogFormVisible = false
+          const result = await this.$API.tradeMark.reqAddOrUpdateTradeMark(this.tmForm)
+          if (result.code === 200) {
+            if (this.tmForm.id) {
+              this.$notify({
+                // title: '成功',
+                message: '修改品牌成功',
+                type: 'success'
+              })
+            } else {
+              this.$notify({
+                // title: '成功',
+                message: '新增品牌成功',
+                type: 'success'
+              })
+            }
+          }
+          this.getPageList(this.tmForm.id ? this.page : 1)
         } else {
-          this.$notify({
-            // title: '成功',
-            message: '新增品牌成功',
-            type: 'success'
-          })
+          console.log('error submit!!!')
+          return false
         }
-      }
-      this.getPageList(this.tmForm.id ? this.page : 1)
+      })
     }
   }
 }
