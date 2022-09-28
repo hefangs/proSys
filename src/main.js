@@ -23,10 +23,10 @@ import '@/permission' // permission control
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
@@ -34,7 +34,10 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 import API from './api'
+import CategorySelect from '@/components/CategorySelect'
 Vue.prototype.$API = API
+
+Vue.component(CategorySelect.name, CategorySelect)
 
 new Vue({
   el: '#app',

@@ -1,5 +1,10 @@
 <template>
-  <div>商品属性</div>
+  <div>
+    <el-card style="margin: 20px 0px">
+      <CategorySelect />
+    </el-card>
+    <el-card />
+  </div>
 </template>
 
 <script>

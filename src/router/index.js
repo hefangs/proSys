@@ -27,7 +27,7 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: 'Dashboard', icon: 'dashboard' }
+        meta: { title: '首页', icon: 'dashboard' }
       }
     ]
   },
@@ -47,7 +47,7 @@ export const constantRoutes = [
         path: 'attr',
         name: 'Attr',
         component: () => import('@/views/product/Attr'),
-        meta: { title: '商品属性' }
+        meta: { title: '平台属性管理' }
       },
       {
         path: 'sku',

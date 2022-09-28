@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div>
     <!-- 添加入口 -->
@@ -9,14 +10,14 @@
       <el-table-column type="index" label="序号" width="100px" align="center" />
       <el-table-column prop="tmName" label="品牌名称" width="width" align="center" />
       <el-table-column prop="logoUrl" label="品牌Logo" width="width" align="center">
-        <template slot-scope="{ row, $index }">
+        <template slot-scope="{ row }">
           <!-- {{ row }}-{{ $index }} -->
           <!-- eslint-disable-next-line vue/html-self-closing -->
           <img :src="row.logoUrl" alt="" style="width: 150px; height: 80px" />
         </template>
       </el-table-column>
       <el-table-column prop="prop" label="操作" width="width" align="center">
-        <template slot-scope="{ row, $index }">
+        <template slot-scope="{ row }">
           <el-button type="warning" size="mini" icon="el-icon-edit" @click="updateTradeMark(row)">
             修改
           </el-button>
