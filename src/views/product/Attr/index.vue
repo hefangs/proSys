@@ -1,5 +1,5 @@
 <template>
-  <div>属性</div>
+  <div>商品属性</div>
 </template>
 
 <script>

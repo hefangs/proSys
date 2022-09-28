@@ -20,7 +20,9 @@
           <el-button type="warning" size="mini" icon="el-icon-edit" @click="updateTradeMark(row)">
             修改
           </el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteTradeMark(row)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,10 +104,11 @@ export default {
     handleCurrentChange(pager) {
       // console.log(`当前页: ${pager}`)
       this.page = pager
-      this.getPageList()
+      this.getPageList(this.page)
     },
     // 获取所有的tradeMark数据
-    async getPageList() {
+    async getPageList(pager = 1) {
+      this.page = pager
       const result = await this.$API.tradeMark.reqTradeMarkList(this.page, this.limit)
       // console.log(result)
       if (result.code === 200) {
@@ -170,6 +173,31 @@ export default {
           return false
         }
       })
+    },
+    // 删除品牌
+    deleteTradeMark(row) {
+      this.$confirm(`你确定呀删除品牌：${row.tmName}？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        // eslint-disable-next-line space-before-function-paren
+        .then(async () => {
+          const result = await this.$API.tradeMark.removeTradeMark(row.id)
+          if (result.code === 200) {
+            this.$notify({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getPageList(this.list.length > 1 ? this.page : this.page - 1)
+          }
+        })
+        .catch(() => {
+          this.$notify({
+            type: 'warning',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }
