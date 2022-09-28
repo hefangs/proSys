@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column prop="prop" label="操作" width="width" align="center">
         <template slot-scope="{ row, $index }">
-          <el-button type="warning" size="mini" icon="el-icon-edit" @click="updateTradeMark">
+          <el-button type="warning" size="mini" icon="el-icon-edit" @click="updateTradeMark(row)">
             修改
           </el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
@@ -37,20 +37,20 @@
     />
     <!-- dialog -->
 
-    <el-dialog title="添加品牌" :visible.sync="dialogFormVisible">
-      <el-form style="width: 80%">
-        <el-form-item label="活动名称" label-width="100px">
-          <el-input v-model="form" autocomplete="off" />
+    <el-dialog :title="tmForm.id ? '修改品牌' : '新增品牌'" :visible.sync="dialogFormVisible">
+      <el-form style="width: 80%" :model="tmForm">
+        <el-form-item label="品牌名称" label-width="100px">
+          <el-input v-model="tmForm.tmName" autocomplete="off" />
         </el-form-item>
         <el-form-item label="品牌LOGO" label-width="100px">
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="dev-api/admin/product/fileUpload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img v-if="tmForm.logoUrl" :src="tmForm.logoUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon" />
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -58,7 +58,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addOrUpdateTradeMark">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -74,8 +74,10 @@ export default {
       total: 0,
       list: [],
       dialogFormVisible: false,
-      imageUrl: '',
-      form: ''
+      tmForm: {
+        tmName: '',
+        logoUrl: ''
+      }
     }
   },
   mounted() {
@@ -105,7 +107,8 @@ export default {
     },
     // 上传图片
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      // console.log(res.data)
+      this.tmForm.logoUrl = res.data
     },
     // 上传图片校验
     beforeAvatarUpload(file) {
@@ -122,10 +125,40 @@ export default {
     // 添加品牌
     showDialog() {
       this.dialogFormVisible = true
+      // 每次添加都清除数据
+      this.tmForm = { tmName: '', logoUrl: '' }
     },
     // 修改品牌
-    updateTradeMark() {
+    updateTradeMark(row) {
       this.dialogFormVisible = true
+      // 这里不能直接对服务器返回的数据进行操作，需要浅拷贝一下
+      // 不要直接操作数据，这些数据是在表格当中进行展示的
+      this.tmForm = { ...row }
+    },
+    // dialog对话框中的【添加】按钮
+    async addOrUpdateTradeMark() {
+      this.dialogFormVisible = false
+      const result = await this.$API.tradeMark.reqAddOrUpdateTradeMark(this.tmForm)
+      // console.log(result)
+      // if (result.code === 200) {
+      //   this.$message(this.tmForm.id ? '修改品牌成功' : '新增品牌成功')
+      // }
+      if (result.code === 200) {
+        if (this.tmForm.id) {
+          this.$notify({
+            // title: '成功',
+            message: '修改品牌成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify({
+            // title: '成功',
+            message: '新增品牌成功',
+            type: 'success'
+          })
+        }
+      }
+      this.getPageList(this.tmForm.id ? this.page : 1)
     }
   }
 }
