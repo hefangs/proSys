@@ -43,30 +43,47 @@ export default {
     // 一级分类
     async getCategory1List() {
       const result = await this.$API.attr.reqCategory1List()
-      // console.log(result)
       if (result.code === 200) {
         this.list1 = result.data
       }
     },
     // 一级分类的id发生改变获取对应的二级分类数据
     async handler1() {
+      // 清空上一次选择的数据
+      this.list2 = []
+      this.list3 = []
+      this.cForm.category2Id = ''
+      this.cForm.category3Id = ''
+      // 解构category1Id 或者传参直接写：this.cForm.category1Id
       const { category1Id } = this.cForm
+      // 给父组件传递category1Id
+      this.$emit('getCategoryId', { categoryId: category1Id, level: 1 })
       const result = await this.$API.attr.reqCategory2List(category1Id)
-      // console.log(result)
       if (result.code === 200) {
         this.list2 = result.data
       }
     },
     // 二级分类的id发生改变获取对应的三级分类数据
     async handler2() {
+      // 清空上一次选择的数据
+      this.list3 = []
+      this.cForm.category3Id = ''
+      // 解构category1Id 或者传参直接写：this.cForm.category1Id
       const { category2Id } = this.cForm
+      // 给父组件传递category2Id
+      this.$emit('getCategoryId', { categoryId: category2Id, level: 2 })
       const result = await this.$API.attr.reqCategory3List(category2Id)
       if (result.code === 200) {
         this.list3 = result.data
       }
     },
     // 三级分类菜单
-    handler3() {}
+    handler3() {
+      // 解构category1Id 或者传参直接写：this.cForm.category1Id
+      const { category3Id } = this.cForm
+      // 给父组件传递category3Id
+      this.$emit('getCategoryId', { categoryId: category3Id, level: 3 })
+    }
   }
 }
 </script>
