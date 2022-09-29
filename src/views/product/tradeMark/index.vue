@@ -127,10 +127,10 @@ export default {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$notify.error('上传头像图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$notify.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
     },
@@ -177,7 +177,7 @@ export default {
     },
     // 删除品牌
     deleteTradeMark(row) {
-      this.$confirm(`你确定呀删除品牌：${row.tmName}？`, '提示', {
+      this.$confirm(`你确定删除品牌：${row.tmName}？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
