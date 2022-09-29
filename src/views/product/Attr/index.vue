@@ -4,31 +4,78 @@
       <CategorySelect @getCategoryId="getCategoryId" />
     </el-card>
     <el-card style="margin: 20px 0px">
-      <!-- 添加属性入口 -->
-      <el-button type="primary" icon="el-icon-plus" style="margin-bottom: 20px">添加属性</el-button>
-      <!-- 表格 -->
-      <el-table :data="attrList" style="width: 100%" border>
-        <el-table-column type="index" label="序号" width="80px" align="center" />
-        <el-table-column prop="attrName" label="属性名称" width="200px" align="center" />
-        <el-table-column prop="prop" label="属性值列表" width="width">
-          <template slot-scope="{ row }">
-            <el-tag
-              v-for="attrItem in row.attrValueList"
-              :key="attrItem.id"
-              type="success"
-              style="margin: 2px"
-            >
-              {{ attrItem.valueName }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="prop" label="操作" width="400px" align="center">
-          <template slot-scope="{ row }">
-            <el-button type="warning" size="mini" icon="el-icon-edit" />
-            <el-button type="danger" size="mini" icon="el-icon-delete" />
-          </template>
-        </el-table-column>
-      </el-table>
+      <div v-show="isShowTable">
+        <!-- 添加属性入口 -->
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          style="margin-bottom: 20px"
+          :disabled="!category3Id"
+          @click="addAttr"
+        >
+          添加属性
+        </el-button>
+        <!-- 表格 -->
+        <el-table :data="attrList" style="width: 100%" border>
+          <el-table-column type="index" label="序号" width="80px" align="center" />
+          <el-table-column prop="attrName" label="属性名称" width="200px" align="center" />
+          <el-table-column prop="prop" label="属性值列表" width="width">
+            <template slot-scope="{ row }">
+              <el-tag
+                v-for="attrItem in row.attrValueList"
+                :key="attrItem.id"
+                type="success"
+                style="margin: 2px"
+              >
+                {{ attrItem.valueName }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="prop" label="操作" width="300px" align="center">
+            <template slot-scope="{}">
+              <el-button
+                type="warning"
+                size="mini"
+                icon="el-icon-edit"
+                @click="isShowTable = false"
+              />
+              <el-button type="danger" size="mini" icon="el-icon-delete" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div v-show="!isShowTable">
+        <!-- 添加属性、修改属性 -->
+        <el-form ref="form" :inline="true" label-width="80px" :model="attrInfo">
+          <el-form-item label="属性名">
+            <el-input v-model="attrInfo.attrName" placeholder="请输入属性名" />
+          </el-form-item>
+        </el-form>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          :disabled="!attrInfo.attrName"
+          @click="addAttrValue"
+        >
+          添加属性值
+        </el-button>
+        <el-button @click="isShowTable = true">取消</el-button>
+        <el-table style="width: 100%; margin: 20px 0px" border :data="attrInfo.attrValueList">
+          <el-table-column type="index" label="序号" width="80px" align="center" />
+          <el-table-column prop="prop" label="属性值名称" width="width">
+            <template slot-scope="{ row }">
+              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="prop" label="操作" width="width">
+            <template slot-scope="{}">
+              <el-button type="danger" icon="el-icon-edit" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button type="primary">保存</el-button>
+        <el-button @click="isShowTable = true">取消</el-button>
+      </div>
     </el-card>
   </div>
 </template>
@@ -41,7 +88,23 @@ export default {
       category1Id: '',
       category2Id: '',
       category3Id: '',
-      attrList: []
+      // 获取平台属性数据
+      attrList: [],
+      isShowTable: true,
+      // 收集的新增属性或者修改属性
+      attrInfo: {
+        // 属性名
+        attrName: '',
+        // 属性值
+        attrValueList: [
+          // {
+          //   attrId: 0,
+          //   valueName: ''
+          // }
+        ],
+        categoryId: 0, // 三级分类id
+        categoryLevel: 3
+      }
     }
   },
   methods: {
@@ -65,6 +128,25 @@ export default {
       const result = await this.$API.attr.reqAttrList(category1Id, category2Id, category3Id)
       if (result.code === 200) {
         this.attrList = result.data
+      }
+    },
+    // 添加属性值
+    addAttrValue() {
+      this.attrInfo.attrValueList.push({
+        attrId: undefined,
+        valueName: ''
+      })
+    },
+    // 添加属性操作
+    addAttr() {
+      // 隐藏table
+      this.isShowTable = false
+      // 清空上次属性
+      this.attrInfo = {
+        attrName: '',
+        attrValueList: [],
+        categoryId: this.category3Id,
+        categoryLevel: 3
       }
     }
   }
