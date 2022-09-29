@@ -59,7 +59,17 @@
           <el-table-column type="index" label="序号" width="80px" align="center" />
           <el-table-column prop="prop" label="属性值名称" width="width">
             <template slot-scope="{ row }">
-              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" />
+              <el-input
+                v-if="row.flag"
+                v-model="row.valueName"
+                placeholder="请输入属性值名称"
+                size="mini"
+                @blur="toLook(row)"
+                @keyup.native.enter="toLook(row)"
+              />
+              <span v-else style="display: block" @click="row.flag = true">
+                {{ row.valueName }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="prop" label="操作" width="width">
@@ -129,8 +139,9 @@ export default {
     // 添加属性值
     addAttrValue() {
       this.attrInfo.attrValueList.push({
-        attrId: undefined,
-        valueName: ''
+        attrId: this.attrInfo.id,
+        valueName: '',
+        flag: true // flag用来切换编辑模式和展示模式
       })
     },
     // 添加属性操作
@@ -149,6 +160,10 @@ export default {
     updateAttr(row) {
       this.isShowTable = false
       this.attrInfo = cloneDeep(row)
+    },
+    // 增加一个flag设置input和span切换效果，失焦和enter都能生效
+    toLook(row) {
+      row.flag = false
     }
   }
 }
