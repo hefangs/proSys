@@ -163,6 +163,21 @@ export default {
     },
     // 增加一个flag设置input和span切换效果，失焦和enter都能生效
     toLook(row) {
+      // eslint-disable-next-line
+      if (row.valueName.trim() == '') {
+        this.$notify.error('属性值名称不能为空')
+        return
+      }
+      const isRepeat = this.attrInfo.attrValueList.some(item => {
+        if (row !== item) {
+          // eslint-disable-next-line
+          return row.valueName == item.valueName
+        }
+      })
+      if (isRepeat) {
+        this.$notify.error('属性值名称已存在')
+        return
+      }
       row.flag = false
     }
   }
