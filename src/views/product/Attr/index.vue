@@ -74,8 +74,13 @@
             </template>
           </el-table-column>
           <el-table-column prop="prop" label="操作" width="width">
-            <template slot-scope="{}">
-              <el-button type="danger" icon="el-icon-edit" />
+            <template slot-scope="{ row, $index }">
+              <el-popconfirm
+                :title="`你确定要删除:${row.valueName} ?`"
+                @onConfirm="deleteAttrValue($index)"
+              >
+                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" />
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -170,6 +175,7 @@ export default {
       this.attrInfo.attrValueList.forEach(item => {
         this.$set(item, 'flag', false)
       })
+      // console.log(row.attrValueList)
     },
     // 增加一个flag设置input和span切换效果，失焦和enter都能生效
     toLook(row) {
@@ -199,6 +205,11 @@ export default {
       this.$nextTick(() => {
         this.$refs[index].focus()
       })
+    },
+    // 气泡确认框：确认操作
+    deleteAttrValue(index) {
+      // 这里的删除只是前台做了删除操作，没有发送请求，后面点击保存才会去发送请求
+      this.attrInfo.attrValueList.splice(index, 1)
     }
   }
 }
