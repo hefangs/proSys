@@ -58,16 +58,17 @@
         <el-table style="width: 100%; margin: 20px 0px" border :data="attrInfo.attrValueList">
           <el-table-column type="index" label="序号" width="80px" align="center" />
           <el-table-column prop="prop" label="属性值名称" width="width">
-            <template slot-scope="{ row }">
+            <template slot-scope="{ row, $index }">
               <el-input
                 v-if="row.flag"
+                :ref="$index"
                 v-model="row.valueName"
                 placeholder="请输入属性值名称"
                 size="mini"
                 @blur="toLook(row)"
                 @keyup.native.enter="toLook(row)"
               />
-              <span v-else style="display: block" @click="row.flag = true">
+              <span v-else style="display: block" @click="toEdit(row, $index)">
                 {{ row.valueName }}
               </span>
             </template>
@@ -143,6 +144,10 @@ export default {
         valueName: '',
         flag: true // flag用来切换编辑模式和展示模式
       })
+      // 新增属性值的时候也要自动聚焦
+      this.$nextTick(() => {
+        this.$refs[this.attrInfo.attrValueList.length - 1].focus()
+      })
     },
     // 添加属性操作
     addAttr() {
@@ -184,6 +189,16 @@ export default {
         return
       }
       row.flag = false
+    },
+    // 点击span切换编辑模式
+    toEdit(row, index) {
+      row.flag = true
+      // 切换input节点，自动获取焦点
+      // 点击span的时候不能保证立马获取到input节点，重排和重绘是需要花费时间的
+      // $nextTick可以保证执行时候input节点是肯定存在的
+      this.$nextTick(() => {
+        this.$refs[index].focus()
+      })
     }
   }
 }
