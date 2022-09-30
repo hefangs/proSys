@@ -159,7 +159,12 @@ export default {
     // 修改属性
     updateAttr(row) {
       this.isShowTable = false
+      // 由于数据接口当中存在对象里面套数组，而数组里面又套着对象，因此需要深拷贝解决此类问题
       this.attrInfo = cloneDeep(row)
+      // 修改属性的时候也需要加上一个flag，通过$set来实现flag是一个响应式的数据
+      this.attrInfo.attrValueList.forEach(item => {
+        this.$set(item, 'flag', false)
+      })
     },
     // 增加一个flag设置input和span切换效果，失焦和enter都能生效
     toLook(row) {
