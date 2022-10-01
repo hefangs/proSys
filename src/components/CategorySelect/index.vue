@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" class="demo-form-inline" :model="cForm">
+    <el-form :inline="true" class="demo-form-inline" :model="cForm" :disabled="show">
       <el-form-item label="一级分类">
         <el-select v-model="cForm.category1Id" placeholder="请选择" @change="handler1">
           <el-option v-for="c1 in list1" :key="c1.id" :label="c1.name" :value="c1.id" />
@@ -23,6 +23,8 @@
 <script>
 export default {
   name: 'CategorySelect',
+  // eslint-disable-next-line vue/require-prop-types
+  props: ['show'],
   data() {
     return {
       list1: [], // 一级分类数据
