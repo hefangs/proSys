@@ -84,7 +84,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="addOrUpdateAttr">保存</el-button>
         <el-button @click="isShowTable = true">取消</el-button>
       </div>
     </el-card>
@@ -210,6 +210,27 @@ export default {
     deleteAttrValue(index) {
       // 这里的删除只是前台做了删除操作，没有发送请求，后面点击保存才会去发送请求
       this.attrInfo.attrValueList.splice(index, 1)
+    },
+    // 保存操作：添加或者修改操作进行保存
+    async addOrUpdateAttr() {
+      // 过滤掉空的属性值&删除编辑和添加属性值带上的flag（flag不需要提交到服务器）
+      this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item => {
+        if (item.valueName !== '') {
+          delete item.flag
+          return true
+        }
+      })
+      const result = await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
+      // console.log(result)
+      if (result.code === 200) {
+        this.$notify.success('添加成功')
+        // 显示table
+        this.isShowTable = true
+        // 重新刷新平台数据
+        this.getAttrList()
+      } else {
+        this.$notify.error('添加失败')
+      }
     }
   }
 }
