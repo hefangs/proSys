@@ -7,19 +7,27 @@
       <!-- table -->
       <div v-show="scene == 0">
         <!-- 添加Spu入口 -->
-        <el-button type="primary" icon="el-icon-plus" style="margin: 20px 0px">添加Spu</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          style="margin: 20px 0px"
+          :disabled="!category3Id"
+          @click="addSpu"
+        >
+          添加Spu
+        </el-button>
         <!-- 表格 -->
         <el-table style="width: 100%" border :data="list">
           <el-table-column type="index" label="序号" width="80px" align="center" />
           <el-table-column prop="spuName" label="SPU名称" width="width" />
           <el-table-column prop="description" label="SPU描述" width="width" />
           <el-table-column prop="prop" label="操作" width="width">
-            <template slot-scope="{}">
+            <template slot-scope="{ row }">
               <el-tooltip class="item" effect="dark" content="添加Sku" placement="bottom">
                 <el-button type="success" icon="el-icon-plus" size="mini" />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="修改Spu" placement="bottom">
-                <el-button type="warning" icon="el-icon-edit" size="mini" />
+                <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateSpu(row)" />
               </el-tooltip>
               <el-tooltip
                 class="item"
@@ -109,6 +117,12 @@ export default {
     handleCurrentChange(page) {
       this.page = page
       this.getSpuList(this.page)
+    },
+    addSpu() {
+      this.scene = 1
+    },
+    updateSpu(row) {
+      this.scene = 1
     }
   }
 }
