@@ -4,7 +4,8 @@
       <CategorySelect :show="!show" @getCategoryId="getCategoryId" />
     </el-card>
     <el-card>
-      <div>
+      <!-- table -->
+      <div v-show="scene == 0">
         <!-- 添加Spu入口 -->
         <el-button type="primary" icon="el-icon-plus" style="margin: 20px 0px">添加Spu</el-button>
         <!-- 表格 -->
@@ -14,7 +15,7 @@
           <el-table-column prop="description" label="SPU描述" width="width" />
           <el-table-column prop="prop" label="操作" width="width">
             <template slot-scope="{}">
-              <el-tooltip class="item" effect="dark" content="添加Spu" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="添加Sku" placement="bottom">
                 <el-button type="success" icon="el-icon-plus" size="mini" />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="修改Spu" placement="bottom">
@@ -46,13 +47,23 @@
           @current-change="handleCurrentChange"
         />
       </div>
+      <!-- 添加修改spu -->
+      <SpuForm v-show="scene == 1" />
+      <!-- 添加sku -->
+      <SkuForm v-show="scene == 2" />
     </el-card>
   </div>
 </template>
 
 <script>
+import SkuForm from './SkuForm'
+import SpuForm from './SpuForm'
 export default {
   name: 'Spu',
+  components: {
+    SkuForm,
+    SpuForm
+  },
   data() {
     return {
       category1Id: '',
@@ -62,7 +73,8 @@ export default {
       page: 1,
       limit: 10,
       total: 0,
-      list: []
+      list: [],
+      scene: 0 // 0默认：table，1：修改spu或者新增，2：新增sku
     }
   },
   methods: {
@@ -80,7 +92,8 @@ export default {
         this.getSpuList()
       }
     },
-    async getSpuList() {
+    async getSpuList(pager = 1) {
+      this.page = pager
       const { page, limit, category3Id } = this
       const result = await this.$API.spu.reqSpuList(limit, page, category3Id)
       console.log(result)
@@ -95,7 +108,7 @@ export default {
     },
     handleCurrentChange(page) {
       this.page = page
-      this.getSpuList()
+      this.getSpuList(this.page)
     }
   }
 }
