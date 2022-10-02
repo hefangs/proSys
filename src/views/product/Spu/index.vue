@@ -8,16 +8,29 @@
         <!-- 添加Spu入口 -->
         <el-button type="primary" icon="el-icon-plus" style="margin: 20px 0px">添加Spu</el-button>
         <!-- 表格 -->
-        <el-table :data="data" style="width: 100%" border>
+        <el-table style="width: 100%" border :data="list">
           <el-table-column type="index" label="序号" width="80px" align="center" />
-          <el-table-column prop="prop" label="SPU名称" width="width" />
-          <el-table-column prop="prop" label="SPU描述" width="width" />
+          <el-table-column prop="spuName" label="SPU名称" width="width" />
+          <el-table-column prop="description" label="SPU描述" width="width" />
           <el-table-column prop="prop" label="操作" width="width">
-            <template slot-scope="{ row, $index }">
-              <el-button type="success" icon="el-icon-plus" size="mini" />
-              <el-button type="warning" icon="el-icon-edit" size="mini" />
-              <el-button type="info" icon="el-icon-info" size="mini" />
-              <el-button type="danger" icon="el-icon-delete" size="mini" />
+            <template slot-scope="{}">
+              <el-tooltip class="item" effect="dark" content="添加Spu" placement="bottom">
+                <el-button type="success" icon="el-icon-plus" size="mini" />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="修改Spu" placement="bottom">
+                <el-button type="warning" icon="el-icon-edit" size="mini" />
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="查看当前Spu全部Sku列表"
+                placement="bottom"
+              >
+                <el-button type="info" icon="el-icon-info" size="mini" />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除Spu" placement="bottom">
+                <el-button type="danger" icon="el-icon-delete" size="mini" />
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -42,15 +55,18 @@ export default {
   name: 'Spu',
   data() {
     return {
-      getCategoryId: '',
-      getCategory2d: '',
-      getCategory3d: '',
-      show: true
+      category1Id: '',
+      category2Id: '',
+      category3Id: '',
+      show: true,
+      page: 1,
+      limit: 10,
+      total: 0,
+      list: []
     }
   },
   methods: {
     // 父组件的自定义事件接受1,2,3级菜单传过来的id
-    // eslint-disable-next-line vue/no-dupe-keys
     getCategoryId({ categoryId, level }) {
       if (level === 1) {
         this.category1Id = categoryId
@@ -64,9 +80,29 @@ export default {
         this.getSpuList()
       }
     },
-    getSpuList() {}
+    async getSpuList() {
+      const { page, limit, category3Id } = this
+      const result = await this.$API.spu.reqSpuList(limit, page, category3Id)
+      console.log(result)
+      if (result.code === 200) {
+        this.total = result.data.total
+        this.list = result.data.records
+      }
+    },
+    handleSizeChange(val) {
+      this.limit = val
+      this.getSpuList()
+    },
+    handleCurrentChange(page) {
+      this.page = page
+      this.getSpuList()
+    }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.item {
+  margin: 4px;
+}
+</style>
