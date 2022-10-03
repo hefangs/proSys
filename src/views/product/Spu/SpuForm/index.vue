@@ -51,7 +51,11 @@ export default {
   data() {
     return {
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      spu: {}, // spu属性信息
+      tradeMarkList: [], // 品牌信息
+      spuImageList: [], // spu图片信息
+      saleAttrList: [] // 销售属性
     }
   },
   methods: {
@@ -66,7 +70,29 @@ export default {
     goScene() {
       this.$emit('changeScene', 0)
     },
-    initSpuData(spu) {}
+    // 初始化spuForm数据
+    async initSpuData(spu) {
+      // 获取spu属性信息
+      const resultSpu = await this.$API.spu.reqSpu(spu.id)
+      if (resultSpu.code === 200) {
+        this.spu = resultSpu.data
+      }
+      // 获取品牌信息
+      const resultTradeMark = await this.$API.spu.reqTradeMarkList()
+      if (resultTradeMark.code === 200) {
+        this.tradeMarkList = resultTradeMark.data
+      }
+      // 获取spu图片信息
+      const resultSpuImage = await this.$API.spu.reqSpuImageList(spu.id)
+      if (resultSpuImage.code === 200) {
+        this.spuImageList = resultSpuImage.data
+      }
+      // 获取全平台销售属性
+      const resultSale = await this.$API.spu.reqBaseSaleAttrList()
+      if (resultSale.code === 200) {
+        this.saleAttrList = resultSale.data
+      }
+    }
   }
 }
 </script>
