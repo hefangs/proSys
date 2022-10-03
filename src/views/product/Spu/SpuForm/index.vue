@@ -1,16 +1,21 @@
 <template>
   <div>
-    <el-form ref="form" label-width="80px">
+    <el-form ref="form" label-width="80px" :model="spu">
       <el-form-item label="Spu名称">
-        <el-input placeholder="请输入Spu名称" />
+        <el-input v-model="spu.spuName" placeholder="请输入Spu名称" />
       </el-form-item>
       <el-form-item label="品牌">
-        <el-select value="" placeholder="请选择品牌">
-          <el-option label="label" value="value" />
+        <el-select v-model="spu.tmId" value="" placeholder="请选择品牌">
+          <el-option
+            v-for="item in tradeMarkList"
+            :key="item.id"
+            :label="item.tmName"
+            :value="item.id"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="Spu描述" placeholder="请输入描述">
-        <el-input type="textarea" rows="4" />
+        <el-input v-model="spu.description" type="textarea" rows="4" />
       </el-form-item>
       <el-form-item label="Spu图片">
         <el-upload
@@ -18,6 +23,7 @@
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
+          :file-list="spuImageList"
         >
           <i class="el-icon-plus" />
         </el-upload>
@@ -52,7 +58,39 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      spu: {}, // spu属性信息
+      // spu属性信息
+      spu: {
+        category3Id: 0,
+        description: '',
+        spuImageList: [
+          {
+            id: 0,
+            imgName: 'string',
+            imgUrl: 'string',
+            spuId: 0
+          }
+        ],
+        spuName: '',
+        spuSaleAttrList: [
+          {
+            // baseSaleAttrId: 0,
+            // id: 0,
+            // saleAttrName: 'string',
+            // spuId: 0,
+            // spuSaleAttrValueList: [
+            //   {
+            //     baseSaleAttrId: 0,
+            //     id: 0,
+            //     isChecked: 'string',
+            //     saleAttrName: 'string',
+            //     saleAttrValueName: 'string',
+            //     spuId: 0
+            //   }
+            // ]
+          }
+        ],
+        tmId: 0
+      },
       tradeMarkList: [], // 品牌信息
       spuImageList: [], // spu图片信息
       saleAttrList: [] // 销售属性
@@ -85,7 +123,12 @@ export default {
       // 获取spu图片信息
       const resultSpuImage = await this.$API.spu.reqSpuImageList(spu.id)
       if (resultSpuImage.code === 200) {
-        this.spuImageList = resultSpuImage.data
+        const listArr = resultSpuImage.data
+        listArr.forEach(item => {
+          item.name = item.imgName
+          item.url = item.imgUrl
+        })
+        this.spuImageList = listArr
       }
       // 获取全平台销售属性
       const resultSale = await this.$API.spu.reqBaseSaleAttrList()

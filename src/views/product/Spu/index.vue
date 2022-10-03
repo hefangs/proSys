@@ -104,7 +104,7 @@ export default {
       this.page = pager
       const { page, limit, category3Id } = this
       const result = await this.$API.spu.reqSpuList(limit, page, category3Id)
-      console.log(result)
+      // console.log(result)
       if (result.code === 200) {
         this.total = result.data.total
         this.list = result.data.records
