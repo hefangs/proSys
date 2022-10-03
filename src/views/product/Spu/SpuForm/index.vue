@@ -19,11 +19,12 @@
       </el-form-item>
       <el-form-item label="Spu图片">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="dev-api/admin/product/fileUpload"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :file-list="spuImageList"
+          :on-success="handleSuccess"
         >
           <i class="el-icon-plus" />
         </el-upload>
@@ -40,7 +41,7 @@
             :value="item.id"
           />
         </el-select>
-        <el-button type="primary" icon="el-icon-plus" :disabled="!attr">添加销售属性</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attrId">添加销售属性</el-button>
         <el-table style="width: 100%" border :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序号" width="80px" align="center" />
           <el-table-column prop="saleAttrName" label="属性名" width="width" />
@@ -142,13 +143,6 @@ export default {
     }
   },
   methods: {
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
     // 给父组件传递scene
     goScene() {
       this.$emit('changeScene', 0)
@@ -180,6 +174,37 @@ export default {
       if (resultSale.code === 200) {
         this.saleAttrList = resultSale.data
       }
+    },
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+    },
+
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm() {
+      const inputValue = this.inputValue
+      if (inputValue) {
+        this.dynamicTags.push(inputValue)
+      }
+      this.inputVisible = false
+      this.inputValue = ''
+    },
+    // 删除图片
+    handleRemove(fileList) {
+      this.spuImageList = fileList
+    },
+    // 预览图片
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // 添加图片
+    handleSuccess(fileList) {
+      this.spuImageList = fileList
     }
   }
 }
