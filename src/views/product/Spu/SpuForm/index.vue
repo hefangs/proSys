@@ -39,7 +39,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary">确定</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="goScene">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +61,12 @@ export default {
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
-    }
+    },
+    // 给父组件传递scene
+    goScene() {
+      this.$emit('changeScene', 0)
+    },
+    initSpuData(spu) {}
   }
 }
 </script>

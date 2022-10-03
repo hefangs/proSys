@@ -56,7 +56,7 @@
         />
       </div>
       <!-- 添加修改spu -->
-      <SpuForm v-show="scene == 1" />
+      <SpuForm v-show="scene == 1" ref="spu" @changeScene="changeScene" />
       <!-- 添加sku -->
       <SkuForm v-show="scene == 2" />
     </el-card>
@@ -123,6 +123,11 @@ export default {
     },
     updateSpu(row) {
       this.scene = 1
+      this.$refs.spu.initSpuData(row)
+    },
+    // 自定义事件回调
+    changeScene(scene) {
+      this.scene = scene
     }
   }
 }
