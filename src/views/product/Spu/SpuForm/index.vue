@@ -32,15 +32,48 @@
         </el-dialog>
       </el-form-item>
       <el-form-item label="销售属性">
-        <el-select placeholder="placeholder" value="">
-          <el-option label="label" value="value" />
+        <el-select v-model="attrId" :placeholder="`还有${unSelectSaleAttr.length}未选择`">
+          <el-option
+            v-for="item in unSelectSaleAttr"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
         </el-select>
-        <el-button type="primary" icon="el-icon-plus">添加销售属性</el-button>
-        <el-table style="width: 100%" border>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attr">添加销售属性</el-button>
+        <el-table style="width: 100%" border :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序号" width="80px" align="center" />
-          <el-table-column prop="prop" label="属性名" width="width" />
-          <el-table-column prop="prop" label="属性值名称列表" width="width" />
-          <el-table-column prop="prop" label="操作" width="width" />
+          <el-table-column prop="saleAttrName" label="属性名" width="width" />
+          <el-table-column prop="prop" label="属性值名称列表" width="width">
+            <template slot-scope="{ row, $index }">
+              <el-tag
+                v-for="tag in row.spuSaleAttrValueLists"
+                :key="tag.id"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)"
+              >
+                {{ tag.saleAttrValueName }}
+              </el-tag>
+              <el-input
+                v-if="row.inputVisible"
+                ref="saveTagInput"
+                v-model="row.inputValue"
+                class="input-new-tag"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              />
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                添加
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="prop" label="操作" width="width">
+            <template slot-scope="{ row, $index }">
+              <el-button type="danger" icon="el-icon-delete" />
+            </template>
+          </el-table-column>
         </el-table>
       </el-form-item>
       <el-form-item>
@@ -65,35 +98,47 @@ export default {
         spuImageList: [
           {
             id: 0,
-            imgName: 'string',
-            imgUrl: 'string',
+            imgName: '',
+            imgUrl: '',
             spuId: 0
           }
         ],
         spuName: '',
         spuSaleAttrList: [
           {
-            // baseSaleAttrId: 0,
-            // id: 0,
-            // saleAttrName: 'string',
-            // spuId: 0,
-            // spuSaleAttrValueList: [
-            //   {
-            //     baseSaleAttrId: 0,
-            //     id: 0,
-            //     isChecked: 'string',
-            //     saleAttrName: 'string',
-            //     saleAttrValueName: 'string',
-            //     spuId: 0
-            //   }
-            // ]
+            baseSaleAttrId: 0,
+            id: 0,
+            saleAttrName: '',
+            spuId: 0,
+            spuSaleAttrValueList: [
+              {
+                baseSaleAttrId: 0,
+                id: 0,
+                isChecked: 'string',
+                saleAttrName: '',
+                saleAttrValueName: '',
+                spuId: 0
+              }
+            ]
           }
         ],
         tmId: 0
       },
       tradeMarkList: [], // 品牌信息
       spuImageList: [], // spu图片信息
-      saleAttrList: [] // 销售属性
+      saleAttrList: [], // 销售属性
+      attrId: '' // 收集未选择的销售属性id
+    }
+  },
+  computed: {
+    // 过滤出未选择的销售属性
+    unSelectSaleAttr() {
+      const result = this.saleAttrList.filter(item1 => {
+        return this.spu.spuSaleAttrList.every(item2 => {
+          return item1.name !== item2.saleAttrName
+        })
+      })
+      return result
     }
   },
   methods: {
@@ -140,4 +185,20 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+</style>
