@@ -14,7 +14,7 @@ export const reqSpu = spuId => request({ url: `/admin/product/getSpuById/${spuId
 // 获取品牌信息
 // GET /admin/product/baseTrademark/getTrademarkList
 export const reqTradeMarkList = () =>
-  request({ url: `/admin/product/baseTrademark/getTrademark`, method: 'get' })
+  request({ url: `/admin/product/baseTrademark/getTrademarkList`, method: 'get' })
 
 // 获取图片信息
 // GET /admin/product/spuImageList/{spuId}

@@ -55,11 +55,11 @@
           <el-table-column prop="prop" label="属性值名称列表" width="width">
             <template slot-scope="{ row, $index }">
               <el-tag
-                v-for="tag in row.spuSaleAttrValueLists"
+                v-for="tag in row.spuSaleAttrValueList"
                 :key="tag.id"
                 closable
                 :disable-transitions="false"
-                @close="handleClose(tag)"
+                @close="handleClose(row, $index)"
               >
                 {{ tag.saleAttrValueName }}
               </el-tag>
@@ -69,10 +69,10 @@
                 v-model="row.inputValue"
                 class="input-new-tag"
                 size="small"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
+                @keyup.enter.native="handleInputConfirm(row)"
+                @blur="handleInputConfirm(row)"
               />
-              <el-button v-else class="button-new-tag" size="small" @click="showInput">
+              <el-button v-else class="button-new-tag" size="small" @click="showInput(row)">
                 添加
               </el-button>
             </template>
@@ -101,36 +101,36 @@ export default {
       dialogVisible: false,
       // spu属性信息
       spu: {
+        tmId: 0,
         category3Id: 0,
         description: '',
         spuImageList: [
-          {
-            id: 0,
-            imgName: '',
-            imgUrl: '',
-            spuId: 0
-          }
+          // {
+          //   id: 0,
+          //   imgName: '',
+          //   imgUrl: '',
+          //   spuId: 0
+          // }
         ],
         spuName: '',
         spuSaleAttrList: [
-          {
-            baseSaleAttrId: 0,
-            id: 0,
-            saleAttrName: '',
-            spuId: 0,
-            spuSaleAttrValueList: [
-              {
-                baseSaleAttrId: 0,
-                id: 0,
-                isChecked: 'string',
-                saleAttrName: '',
-                saleAttrValueName: '',
-                spuId: 0
-              }
-            ]
-          }
-        ],
-        tmId: 0
+          // {
+          //   baseSaleAttrId: 0,
+          //   id: 0,
+          //   saleAttrName: '',
+          //   spuId: 0,
+          //   spuSaleAttrValueList: [
+          //     {
+          //       baseSaleAttrId: 0,
+          //       id: 0,
+          //       isChecked: 'string',
+          //       saleAttrName: '',
+          //       saleAttrValueName: '',
+          //       spuId: 0
+          //     }
+          //   ]
+          // }
+        ]
       },
       tradeMarkList: [], // 品牌信息
       spuImageList: [], // spu图片信息
@@ -158,18 +158,23 @@ export default {
     async initSpuData(spu) {
       // 获取spu属性信息
       const resultSpu = await this.$API.spu.reqSpu(spu.id)
+      // console.log(resultSpu)
       if (resultSpu.code === 200) {
         this.spu = resultSpu.data
       }
       // 获取品牌信息
       const resultTradeMark = await this.$API.spu.reqTradeMarkList()
+      // console.log(resultTradeMark)
       if (resultTradeMark.code === 200) {
         this.tradeMarkList = resultTradeMark.data
       }
       // 获取spu图片信息
       const resultSpuImage = await this.$API.spu.reqSpuImageList(spu.id)
+      // console.log(resultSpuImage)
       if (resultSpuImage.code === 200) {
         const listArr = resultSpuImage.data
+        // 由于照片墙显示图片需要有name与url字段
+        // 而服务器返回的字段imgName，imgUrl，需要把服务器返回的数据进行修改
         listArr.forEach(item => {
           item.name = item.imgName
           item.url = item.imgUrl
@@ -178,27 +183,38 @@ export default {
       }
       // 获取全平台销售属性
       const resultSale = await this.$API.spu.reqBaseSaleAttrList()
+      // console.log(resultSale)
       if (resultSale.code === 200) {
         this.saleAttrList = resultSale.data
       }
     },
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+    // 删除标签
+    handleClose(row, index) {
+      row.spuSaleAttrValueList.splice(index, 1)
     },
-
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
+    // 显示input
+    showInput(row) {
+      // 增加2个响应式数据：inputVisible和inputValue
+      this.$set(row, 'inputVisible', true)
+      this.$set(row, 'inputValue', '')
+      this.$nextTick(() => {
+        this.$refs.saveTagInput.focus()
       })
     },
-    handleInputConfirm() {
-      const inputValue = this.inputValue
-      if (inputValue) {
-        this.dynamicTags.push(inputValue)
+    // input失焦事件
+    handleInputConfirm(row) {
+      const { baseSaleAttrId, inputValue } = row // 解构出销售属性当中收集数据
+      const newSaleAttrValue = { baseSaleAttrId, saleAttrValueName: inputValue } // 新增的销售属性值
+      if (inputValue.trim() === '') return this.$notify.error('属性值不能为空') // 新增的销售属性值的名称不能为空
+      const result = row.spuSaleAttrValueList.some(
+        item => item.saleAttrValueName === inputValue // 属性值不能重复,这里也可以用some
+      )
+      if (result) {
+        this.$notify.error('属性值不能重复')
+        return
       }
-      this.inputVisible = false
-      this.inputValue = ''
+      row.spuSaleAttrValueList.push(newSaleAttrValue) // 新增
+      row.inputVisible = false // 修改inputVisible为false，不就显示button
     },
     // 删除图片
     handleRemove(fileList) {
@@ -213,10 +229,12 @@ export default {
     handleSuccess(fileList) {
       this.spuImageList = fileList
     },
+    // 添加销售属性
     addSaleAttr() {
       const [baseSaleAttrId, saleAttrName] = this.attrIdAndName.split(':')
       const newSaleAttr = { baseSaleAttrId, saleAttrName, spuSaleAttrValueList: [] }
       this.spu.spuSaleAttrList.push(newSaleAttr)
+      this.attrIdAndName = ''
     }
   }
 }
