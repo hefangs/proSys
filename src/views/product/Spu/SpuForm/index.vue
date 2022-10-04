@@ -205,9 +205,12 @@ export default {
     handleInputConfirm(row) {
       const { baseSaleAttrId, inputValue } = row // 解构出销售属性当中收集数据
       const newSaleAttrValue = { baseSaleAttrId, saleAttrValueName: inputValue } // 新增的销售属性值
-      if (inputValue.trim() === '') return this.$notify.error('属性值不能为空') // 新增的销售属性值的名称不能为空
+      if (inputValue.trim() === '') {
+        this.$notify.error('属性值不能为空') // 新增的销售属性值的名称不能为空
+        return
+      }
       const result = row.spuSaleAttrValueList.some(
-        item => item.saleAttrValueName === inputValue // 属性值不能重复,这里也可以用some
+        item => item.saleAttrValueName === inputValue // 属性值不能重复,
       )
       if (result) {
         this.$notify.error('属性值不能重复')
