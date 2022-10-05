@@ -85,8 +85,8 @@
         </el-table>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">确定</el-button>
-        <el-button @click="goScene">取消</el-button>
+        <el-button type="primary" @click="addOrUpdateSpu">确定</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -101,7 +101,7 @@ export default {
       dialogVisible: false,
       // spu属性信息
       spu: {
-        tmId: 0,
+        tmId: '',
         category3Id: 0,
         description: '',
         spuImageList: [
@@ -150,9 +150,11 @@ export default {
     }
   },
   methods: {
+    // 取消
     // 给父组件传递scene
-    goScene() {
-      this.$emit('changeScene', 0)
+    cancel() {
+      this.$emit('changeScene', { scene: 0, flag: '' })
+      Object.assign(this._data, this.$options.data())
     },
     // 初始化spuForm数据
     async initSpuData(spu) {
@@ -220,8 +222,10 @@ export default {
       row.inputVisible = false // 修改inputVisible为false，不就显示button
     },
     // 删除图片
-    handleRemove(fileList) {
+    handleRemove(fileList, file) {
       this.spuImageList = fileList
+      // console.log(file)
+      // console.log(fileList)
     },
     // 预览图片
     handlePictureCardPreview(file) {
@@ -229,7 +233,9 @@ export default {
       this.dialogVisible = true
     },
     // 添加图片
-    handleSuccess(fileList) {
+    handleSuccess(fileList, file, response) {
+      // console.log(file)
+      // console.log(fileList)
       this.spuImageList = fileList
     },
     // 添加销售属性
@@ -242,6 +248,39 @@ export default {
     // 删除属性
     handleDeleteAttr(index) {
       this.spu.spuSaleAttrList.splice(index, 1)
+    },
+    // 保存数据
+    async addOrUpdateSpu() {
+      this.spu.spuImageList = this.spuImageList.map(item => {
+        return {
+          // 携带参数：对于图片，需要携带imageName与imageUrl字段
+          imgName: item.name,
+          imgUrl: (item.response && item.response.data) || item.imgUrl
+        }
+      })
+      const result = await this.$API.spu.reqAddOrUpdateSpu(this.spu)
+      // eslint-disable-next-line
+      if (result.code == 200) {
+        this.$notify.success('添加成功')
+        this.$emit('changeScene', { scene: 0, flag: this.spu.id ? '修改' : '添加' })
+      }
+      Object.assign(this._data, this.$options.data())
+    },
+    async addSpuData(category3Id) {
+      // category3Id 由父组件addSpu函数传递
+      this.spu.category3Id = category3Id
+      // 获取品牌信息
+      const resultTradeMark = await this.$API.spu.reqTradeMarkList()
+      // console.log(resultTradeMark)
+      if (resultTradeMark.code === 200) {
+        this.tradeMarkList = resultTradeMark.data
+      }
+      // 获取全平台销售属性
+      const resultSale = await this.$API.spu.reqBaseSaleAttrList()
+      // console.log(resultSale)
+      if (resultSale.code === 200) {
+        this.saleAttrList = resultSale.data
+      }
     }
   }
 }

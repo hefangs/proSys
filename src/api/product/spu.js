@@ -25,3 +25,14 @@ export const reqSpuImageList = spuId =>
 // GET /admin/product/baseSaleAttrList
 export const reqBaseSaleAttrList = () =>
   request({ url: `/admin/product/baseSaleAttrList`, method: 'get' })
+
+// 添加或修改spu（有id是修改）
+// /admin/product/saveSpuInfo
+// /admin/product/updateSpuInfo
+export const reqAddOrUpdateSpu = spuInfo => {
+  if (spuInfo.id) {
+    return request({ url: `/admin/product/updateSpuInfo`, method: 'post', data: spuInfo })
+  } else {
+    return request({ url: `/admin/product/saveSpuInfo`, method: 'post', data: spuInfo })
+  }
+}

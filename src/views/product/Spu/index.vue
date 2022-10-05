@@ -102,7 +102,7 @@ export default {
     async getSpuList(pager = 1) {
       this.page = pager
       const { page, limit, category3Id } = this
-      const result = await this.$API.spu.reqSpuList(limit, page, category3Id)
+      const result = await this.$API.spu.reqSpuList(page, limit, category3Id)
       // console.log(result)
       if (result.code === 200) {
         this.total = result.data.total
@@ -119,14 +119,23 @@ export default {
     },
     addSpu() {
       this.scene = 1
+      // 通知子组件发送请求（2个api请求 ）
+      this.$refs.spu.addSpuData(this.category3Id)
     },
     updateSpu(row) {
       this.scene = 1
+      // 通知子组件发送请求（4个api请求 ）
       this.$refs.spu.initSpuData(row)
     },
     // 自定义事件回调
-    changeScene(scene) {
+    changeScene({ scene, flag }) {
       this.scene = scene
+      // eslint-disable-next-line eqeqeq
+      if (flag == '修改') {
+        this.getSpuList(this.page)
+      } else {
+        this.getSpuList()
+      }
     }
   }
 }
