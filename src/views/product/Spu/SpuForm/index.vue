@@ -69,7 +69,7 @@
                 v-model="row.inputValue"
                 class="input-new-tag"
                 size="small"
-                @keyup.enter.native="handleInputConfirm(row)"
+                @keyup.enter.native="$event.target.blur"
                 @blur="handleInputConfirm(row)"
               />
               <el-button v-else class="button-new-tag" size="small" @click="showInput(row)">
@@ -99,43 +99,46 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      // spu属性信息
+      // spu属性初始化的时候是一个空的对象,在修改SPU的时候，会想服务器发请求，返回SPU信息（对象），在修改的时候可以利用服务器返回的这个对象收集最新的数据提交给服务器
+      // 添加SPU，如果是添加SPU的时候并没有向服务器发请求，数据收集到哪里呀[SPU]，收集数据的时候有哪些字段呀，看文档
       spu: {
-        tmId: '',
-        category3Id: 0,
-        description: '',
+        category3Id: 0, // 三级分类的id
+        description: '', // 描述
+        spuName: '', // spu名称
+        tmId: '', // 平台的id
+        // 收集SPU图片的信息
         spuImageList: [
           // {
           //   id: 0,
-          //   imgName: '',
-          //   imgUrl: '',
-          //   spuId: 0
-          // }
+          //   imgName: "string",
+          //   imgUrl: "string",
+          //   spuId: 0,
+          // },
         ],
-        spuName: '',
+        // 平台属性与属性值收集
         spuSaleAttrList: [
           // {
           //   baseSaleAttrId: 0,
           //   id: 0,
-          //   saleAttrName: '',
+          //   saleAttrName: "string",
           //   spuId: 0,
           //   spuSaleAttrValueList: [
           //     {
           //       baseSaleAttrId: 0,
           //       id: 0,
-          //       isChecked: 'string',
-          //       saleAttrName: '',
-          //       saleAttrValueName: '',
-          //       spuId: 0
-          //     }
-          //   ]
-          // }
+          //       isChecked: "string",
+          //       saleAttrName: "string",
+          //       saleAttrValueName: "string",
+          //       spuId: 0,
+          //     },
+          //   ],
+          // },
         ]
       },
-      tradeMarkList: [], // 品牌信息
-      spuImageList: [], // spu图片信息
-      saleAttrList: [], // 销售属性
-      attrIdAndName: '' // 收集未选择的销售属性id
+      tradeMarkList: [], // 存储品牌信息
+      spuImageList: [], // 存储SPU图片的数据
+      saleAttrList: [], // 销售属性的数据（项目全部的销售属性）
+      attrIdAndName: '' // 收集未选择的销售属性的id-----
     }
   },
   computed: {
@@ -223,7 +226,7 @@ export default {
     },
     // 删除图片
     handleRemove(fileList, file) {
-      this.spuImageList = fileList
+      this.spuImageList = file
       // console.log(file)
       // console.log(fileList)
     },
@@ -236,7 +239,8 @@ export default {
     handleSuccess(fileList, file, response) {
       // console.log(file)
       // console.log(fileList)
-      this.spuImageList = fileList
+      // console.log(response)
+      this.spuImageList = response
     },
     // 添加销售属性
     addSaleAttr() {
@@ -261,8 +265,14 @@ export default {
       const result = await this.$API.spu.reqAddOrUpdateSpu(this.spu)
       // eslint-disable-next-line
       if (result.code == 200) {
-        this.$notify.success('添加成功')
-        this.$emit('changeScene', { scene: 0, flag: this.spu.id ? '修改' : '添加' })
+        // this.$emit('changeScene', { scene: 0, flag: this.spu.id ? '修改' : '添加' })
+        if (!this.spu.id) {
+          this.$notify.success('添加成功')
+          this.$emit('changeScene', { scene: 0, flag: '添加' })
+        } else {
+          this.$notify.success('修改成功')
+          this.$emit('changeScene', { scene: 0, flag: '修改' })
+        }
       }
       Object.assign(this._data, this.$options.data())
     },
