@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card style="margin: 20px 0px">
-      <CategorySelect :show="!show" @getCategoryId="getCategoryId" />
+      <CategorySelect :show="scene != 0" @getCategoryId="getCategoryId" />
     </el-card>
     <el-card>
       <!-- table -->
@@ -77,7 +77,6 @@ export default {
       category1Id: '',
       category2Id: '',
       category3Id: '',
-      show: true,
       page: 1,
       limit: 10,
       total: 0,

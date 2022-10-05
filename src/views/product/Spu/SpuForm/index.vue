@@ -19,11 +19,11 @@
       </el-form-item>
       <el-form-item label="Spu图片">
         <el-upload
-          action="dev-api/admin/product/fileUpload"
+          action="/dev-api/admin/product/fileUpload"
+          :file-list="spuImageList"
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
-          :file-list="spuImageList"
           :on-success="handleSuccess"
         >
           <i class="el-icon-plus" />
@@ -78,8 +78,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="prop" label="操作" width="width">
-            <template slot-scope="{ row, $index }">
-              <el-button type="danger" icon="el-icon-delete" />
+            <template slot-scope="{ $index }">
+              <el-button type="danger" icon="el-icon-delete" @click="handleDeleteAttr($index)" />
             </template>
           </el-table-column>
         </el-table>
@@ -238,6 +238,10 @@ export default {
       const newSaleAttr = { baseSaleAttrId, saleAttrName, spuSaleAttrValueList: [] }
       this.spu.spuSaleAttrList.push(newSaleAttr)
       this.attrIdAndName = ''
+    },
+    // 删除属性
+    handleDeleteAttr(index) {
+      this.spu.spuSaleAttrList.splice(index, 1)
     }
   }
 }
