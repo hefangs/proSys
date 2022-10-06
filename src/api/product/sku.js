@@ -16,3 +16,6 @@ export const reqAttrInfoList = (category1Id, category2Id, category3Id) =>
     url: `/admin/product/attrInfoList/${category1Id}/${category2Id}/${category3Id}`,
     method: 'get'
   })
+
+// 保存 sku
+// POST /admin/product/saveSkuInfo
