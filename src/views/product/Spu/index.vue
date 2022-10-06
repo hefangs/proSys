@@ -24,7 +24,7 @@
           <el-table-column prop="prop" label="操作" width="width">
             <template slot-scope="{ row }">
               <el-tooltip class="item" effect="dark" content="添加Sku" placement="bottom">
-                <el-button type="success" icon="el-icon-plus" size="mini" />
+                <el-button type="success" icon="el-icon-plus" size="mini" @click="addSku(row)" />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="修改Spu" placement="bottom">
                 <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateSpu(row)" />
@@ -147,6 +147,10 @@ export default {
         this.$notify.success('删除成功')
         this.getSpuList(this.list.length > 1 ? this.page : this.page - 1)
       }
+    },
+    // 添加sku
+    addSku(row) {
+      this.scene = 2
     }
   }
 }
