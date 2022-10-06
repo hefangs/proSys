@@ -38,7 +38,9 @@
                 <el-button type="info" icon="el-icon-info" size="mini" />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除Spu" placement="bottom">
-                <el-button type="danger" icon="el-icon-delete" size="mini" />
+                <el-popconfirm :title="`确定删除${row.spuName}吗？`" @onConfirm="deleteSpu(row)">
+                  <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" />
+                </el-popconfirm>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -130,11 +132,20 @@ export default {
     // 自定义事件回调
     changeScene({ scene, flag }) {
       this.scene = scene
-      // eslint-disable-next-line eqeqeq
+      // eslint-disable-next-line
       if (flag == '修改') {
         this.getSpuList(this.page)
       } else {
         this.getSpuList()
+      }
+    },
+    // 删除spu
+    async deleteSpu(row) {
+      const result = await this.$API.spu.reqDeleteSpu(row.id)
+      //  eslint-disable-next-line
+      if (result.code == 200) {
+        this.$notify.success('删除成功')
+        this.getSpuList(this.list.length > 1 ? this.page : this.page - 1)
       }
     }
   }

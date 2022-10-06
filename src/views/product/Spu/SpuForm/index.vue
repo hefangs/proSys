@@ -215,7 +215,8 @@ export default {
         return
       }
       const result = row.spuSaleAttrValueList.some(
-        item => item.saleAttrValueName === inputValue // 属性值不能重复,
+        // eslint-disable-next-line
+        item => item.saleAttrValueName == inputValue // 属性值不能重复,
       )
       if (result) {
         this.$notify.error('属性值不能重复')
@@ -232,6 +233,7 @@ export default {
     },
     // 预览图片
     handlePictureCardPreview(file) {
+      // console.log(file)
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
@@ -276,6 +278,7 @@ export default {
       }
       Object.assign(this._data, this.$options.data())
     },
+    // 添加属性：初始化数据2个api请求
     async addSpuData(category3Id) {
       // category3Id 由父组件addSpu函数传递
       this.spu.category3Id = category3Id
