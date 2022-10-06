@@ -156,7 +156,7 @@ export default {
     // 取消
     // 给父组件传递scene
     cancel() {
-      this.$emit('changeScene', { scene: 0, flag: '' })
+      this.$emit('changeSceneSpu', { scene: 0, flag: '' })
       Object.assign(this._data, this.$options.data())
     },
     // 初始化spuForm数据
@@ -267,13 +267,13 @@ export default {
       const result = await this.$API.spu.reqAddOrUpdateSpu(this.spu)
       // eslint-disable-next-line
       if (result.code == 200) {
-        // this.$emit('changeScene', { scene: 0, flag: this.spu.id ? '修改' : '添加' })
+        // this.$emit('changeSceneSpu', { scene: 0, flag: this.spu.id ? '修改' : '添加' })
         if (!this.spu.id) {
           this.$notify.success('添加成功')
-          this.$emit('changeScene', { scene: 0, flag: '添加' })
+          this.$emit('changeSceneSpu', { scene: 0, flag: '添加' })
         } else {
           this.$notify.success('修改成功')
-          this.$emit('changeScene', { scene: 0, flag: '修改' })
+          this.$emit('changeSceneSpu', { scene: 0, flag: '修改' })
         }
       }
       Object.assign(this._data, this.$options.data())

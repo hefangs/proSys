@@ -58,9 +58,9 @@
         />
       </div>
       <!-- 添加修改spu -->
-      <SpuForm v-show="scene == 1" ref="spu" @changeScene="changeScene" />
+      <SpuForm v-show="scene == 1" ref="spu" @changeSceneSpu="changeSceneSpu" />
       <!-- 添加sku -->
-      <SkuForm v-show="scene == 2" ref="sku" />
+      <SkuForm v-show="scene == 2" ref="sku" @changeSceneSku="changeSceneSku" />
     </el-card>
   </div>
 </template>
@@ -130,7 +130,7 @@ export default {
       this.$refs.spu.initSpuData(row)
     },
     // 自定义事件回调
-    changeScene({ scene, flag }) {
+    changeSceneSpu({ scene, flag }) {
       this.scene = scene
       // eslint-disable-next-line
       if (flag == '修改') {
@@ -138,6 +138,9 @@ export default {
       } else {
         this.getSpuList()
       }
+    },
+    changeSceneSku(scene) {
+      this.scene = scene
     },
     // 删除spu
     async deleteSpu(row) {

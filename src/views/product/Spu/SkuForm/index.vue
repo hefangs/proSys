@@ -71,8 +71,8 @@
         </el-table>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">保存</el-button>
-        <el-button>取消</el-button>
+        <el-button type="primary" @click="savaData">保存</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -138,7 +138,6 @@ export default {
   },
   methods: {
     async getData(category1Id, category2Id, spu) {
-      console.log(spu.spuName)
       this.skuInfo.category3Id = spu.category3Id
       this.skuInfo.tmId = spu.tmId
       this.skuInfo.spuId = spu.id
@@ -177,6 +176,47 @@ export default {
       })
       row.isDefault = 1
       this.skuInfo.skuDefaultImg = row.imgUrl
+    },
+    cancel() {
+      this.$emit('changeSceneSku', 0)
+      Object.assign(this._data, this.$options.data())
+    },
+    async savaData() {
+      // 整理参数
+      // 整理平台属性
+      const { attrInfoList, skuInfo, spuSaleAttrList, imageList } = this
+      // 整理平台属的数据
+      skuInfo.skuAttrValueList = attrInfoList.reduce((prev, item) => {
+        if (item.attrIdAndValueId) {
+          const [attrId, valueId] = item.attrIdAndValueId.split(':')
+          prev.push({ attrId, valueId })
+        }
+        return prev
+      }, [])
+      // 整理销售属性
+      skuInfo.skuSaleAttrValueList = spuSaleAttrList.reduce((prev, item) => {
+        if (item.attrIdAndValueId) {
+          const [saleAttrId, saleAttrValueId] = item.attrIdAndValueId.split(':')
+          prev.push({ saleAttrId, saleAttrValueId })
+        }
+        return prev
+      }, [])
+      // 整理图片的数据
+      skuInfo.skuImageList = imageList.map(item => {
+        return {
+          imgName: item.imgName,
+          imgUrl: item.imgUrl,
+          isDefault: item.isDefault,
+          spuImgId: item.id
+        }
+      })
+      // 发请求
+      const result = await this.$API.spu.reqAddSku(skuInfo)
+      // eslint-disable-next-line
+      if (result.code == 200) {
+        this.$notify.success('添加SKU成功')
+        this.$emit('changeSceneSku', 0)
+      }
     }
   }
 }
