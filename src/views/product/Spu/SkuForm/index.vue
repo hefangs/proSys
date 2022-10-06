@@ -57,7 +57,35 @@
 
 <script>
 export default {
-  name: 'SkuForm'
+  name: 'SkuForm',
+  data() {
+    return {
+      spuImageList: [],
+      spuSaleAttrList: [],
+      attrInfoList: []
+    }
+  },
+  methods: {
+    async getData(category1Id, category2Id, spu) {
+      const result1 = await this.$API.sku.reqSpuImageList(spu.id)
+      // eslint-disable-next-line
+      if (result1.code == 200) {
+        this.spuImageList = result1.data
+      }
+      const result2 = await this.$API.sku.reqSpuSaleAttrList(spu.id)
+      console.log(result2)
+      // eslint-disable-next-line
+      if (result2.code == 200) {
+        this.spuSaleAttrList = result2.data
+      }
+      const result3 = await this.$API.sku.reqAttrInfoList(category1Id, category2Id, spu.category3Id)
+      console.log(result3)
+      // eslint-disable-next-line
+      if (result3.code == 200) {
+        this.attrInfoList = result2.data
+      }
+    }
+  }
 }
 </script>
 

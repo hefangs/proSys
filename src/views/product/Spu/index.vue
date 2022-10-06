@@ -60,7 +60,7 @@
       <!-- 添加修改spu -->
       <SpuForm v-show="scene == 1" ref="spu" @changeScene="changeScene" />
       <!-- 添加sku -->
-      <SkuForm v-show="scene == 2" />
+      <SkuForm v-show="scene == 2" ref="sku" />
     </el-card>
   </div>
 </template>
@@ -151,6 +151,8 @@ export default {
     // 添加sku
     addSku(row) {
       this.scene = 2
+      // 获取子组件上的方法，发送请求（3个）
+      this.$refs.sku.getData(this.category1Id, this.category2Id, row)
     }
   }
 }
