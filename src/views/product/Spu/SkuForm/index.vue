@@ -47,11 +47,27 @@
         </el-form>
       </el-form-item>
       <el-form-item label="图片列表">
-        <el-table style="width: 100%" border>
+        <el-table
+          style="width: 100%"
+          border
+          :data="spuImageList"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column prop="prop" label="label" width="80" type="selection" />
-          <el-table-column prop="prop" label="图片" width="width" />
-          <el-table-column prop="prop" label="名称" width="width" />
-          <el-table-column prop="prop" label="操作" width="width" />
+          <el-table-column prop="prop" label="图片" width="width">
+            <template slot-scope="{ row }">
+              <img :src="row.imgUrl" alt="" style="width: 100px; height: 100px" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="imgName" label="名称" width="width" />
+          <el-table-column prop="prop" label="操作" width="width">
+            <template slot-scope="{ row }">
+              <el-button v-if="row.isDefault == 0" type="primary" @click="changeDefault(row)">
+                设置默认
+              </el-button>
+              <el-button v-else>默认</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-form-item>
       <el-form-item>
@@ -130,7 +146,12 @@ export default {
       const result1 = await this.$API.sku.reqSpuImageList(spu.id)
       // eslint-disable-next-line
       if (result1.code == 200) {
-        this.spuImageList = result1.data
+        const list = result1.data
+        list.forEach(item => {
+          // eslint-disable-next-line
+          item.isDefault = 0
+        })
+        this.spuImageList = list
       }
       const result2 = await this.$API.sku.reqSpuSaleAttrList(spu.id)
       // console.log(result2)
@@ -144,6 +165,18 @@ export default {
       if (result3.code == 200) {
         this.attrInfoList = result3.data
       }
+    },
+    // table表格复选框事件
+    handleSelectionChange(val) {
+      this.imageList = val
+    },
+    // 设置默认
+    changeDefault(row) {
+      this.spuImageList.forEach(item => {
+        item.isDefault = 0
+      })
+      row.isDefault = 1
+      this.skuInfo.skuDefaultImg = row.imgUrl
     }
   }
 }
