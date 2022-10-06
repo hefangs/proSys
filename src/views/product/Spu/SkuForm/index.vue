@@ -217,6 +217,7 @@ export default {
         this.$notify.success('添加SKU成功')
         this.$emit('changeSceneSku', 0)
       }
+      Object.assign(this._data, this.$options.data())
     }
   }
 }

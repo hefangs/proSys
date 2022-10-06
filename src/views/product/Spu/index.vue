@@ -35,7 +35,12 @@
                 content="查看当前Spu全部Sku列表"
                 placement="bottom"
               >
-                <el-button type="info" icon="el-icon-info" size="mini" />
+                <el-button
+                  type="info"
+                  icon="el-icon-info"
+                  size="mini"
+                  @click="handleSkuList(row)"
+                />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除Spu" placement="bottom">
                 <el-popconfirm :title="`确定删除${row.spuName}吗？`" @onConfirm="deleteSpu(row)">
@@ -62,6 +67,19 @@
       <!-- 添加sku -->
       <SkuForm v-show="scene == 2" ref="sku" @changeSceneSku="changeSceneSku" />
     </el-card>
+    <!-- 查看当前Spu全部Sku列表 -->
+    <el-dialog :title="`${spu.spuName}的sku列表`" :visible.sync="dialogTableVisible">
+      <el-table :data="skuList" border style="width: 100%">
+        <el-table-column prop="skuName" label="名称" width="width" />
+        <el-table-column prop="price" label="价格" width="width" />
+        <el-table-column prop="weight" label="重量" width="width" />
+        <el-table-column label="默认图片">
+          <template slot-scope="{ row }">
+            <img :src="row.skuDefaultImg" alt="" style="width: 100px; height: 100px" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -83,7 +101,10 @@ export default {
       limit: 10,
       total: 0,
       list: [],
-      scene: 0 // 0默认：table，1：修改spu或者新增，2：新增sku
+      scene: 0, // 0默认：table，1：修改spu或者新增，2：新增sku
+      dialogTableVisible: false,
+      spu: {},
+      skuList: []
     }
   },
   methods: {
@@ -156,6 +177,17 @@ export default {
       this.scene = 2
       // 获取子组件上的方法，发送请求（3个）
       this.$refs.sku.getData(this.category1Id, this.category2Id, row)
+    },
+    // 查看当前Spu全部Sku列表
+    async handleSkuList(spu) {
+      this.dialogTableVisible = true
+      this.spu = spu
+      const result = await this.$API.spu.reqSkuList(spu.id)
+      // console.log(result)
+      // eslint-disable-next-line
+      if (result.code == 200) {
+        this.skuList = result.data
+      }
     }
   }
 }
