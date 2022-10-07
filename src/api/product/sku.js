@@ -16,6 +16,15 @@ export const reqAttrInfoList = (category1Id, category2Id, category3Id) =>
     url: `/admin/product/attrInfoList/${category1Id}/${category2Id}/${category3Id}`,
     method: 'get'
   })
+// 获取sku列表
+//   GET /admin/product/list/{page}/{limit}
+export const reqSkuList = (page, limit) =>
+  request({ url: `/admin/product/list/${page}/${limit}`, method: 'get' })
 
-// 保存 sku
-// POST /admin/product/saveSkuInfo
+// 上架
+// GET /admin/product/onSale/{skuId}
+export const reqSale = skuId => request({ url: `/admin/product/onSale/${skuId}`, method: 'get' })
+// 下架
+// GET /admin/product/cancelSale/{skuId}
+export const reqCancelSale = skuId =>
+  request({ url: `/admin/product/cancelSale/${skuId}`, method: 'get' })
