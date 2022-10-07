@@ -46,7 +46,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- drawer -->
-    <el-drawer :visible.sync="show" :show-close="false" size="40%">
+    <el-drawer :visible.sync="show" :show-close="false" size="40%" :before-close="close">
       <el-row>
         <el-col :span="5">名称</el-col>
         <el-col :span="16">{{ skuInfo.skuName }}</el-col>
@@ -77,7 +77,7 @@
       <el-row>
         <el-col :span="5">商品图片</el-col>
         <el-col :span="16">
-          <el-carousel height="300px">
+          <el-carousel height="300px" class="a">
             <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
               <img :src="item.imgUrl" />
             </el-carousel-item>
@@ -155,12 +155,19 @@ export default {
         this.skuInfo = result.data
       }
     },
-    handleClose() {}
+    // 处理数据回显问题
+    close(done) {
+      this.skuInfo = {}
+      done()
+    }
   }
 }
 </script>
 
 <style>
+.a {
+  border: 1px gray solid;
+}
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -177,7 +184,7 @@ export default {
 .el-carousel__button {
   width: 10px;
   height: 10px;
-  background: red;
+  background: brown;
   border-radius: 50%;
 }
 </style>
