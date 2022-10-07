@@ -28,3 +28,8 @@ export const reqSale = skuId => request({ url: `/admin/product/onSale/${skuId}`,
 // GET /admin/product/cancelSale/{skuId}
 export const reqCancelSale = skuId =>
   request({ url: `/admin/product/cancelSale/${skuId}`, method: 'get' })
+
+// 获取sku详情
+// GET /admin/product/getSkuById/{skuId}
+export const reqSkuById = skuId =>
+  request({ url: `/admin/product/getSkuById/${skuId}`, method: 'get' })

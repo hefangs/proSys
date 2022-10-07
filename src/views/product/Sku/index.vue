@@ -29,7 +29,7 @@
             @click="cancelSale(row)"
           />
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="developing" />
-          <el-button type="info" icon="el-icon-info" size="mini" />
+          <el-button type="info" icon="el-icon-info" size="mini" @click="getSkuInfo(row)" />
           <el-button type="danger" icon="el-icon-delete" size="mini" />
         </template>
       </el-table-column>
@@ -45,6 +45,46 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <!-- drawer -->
+    <el-drawer :visible.sync="show" :show-close="false" size="40%">
+      <el-row>
+        <el-col :span="5">名称</el-col>
+        <el-col :span="16">{{ skuInfo.skuName }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">描述</el-col>
+        <el-col :span="16">{{ skuInfo.skuDesc }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">价格</el-col>
+        <el-col :span="16">{{ skuInfo.price }}元</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">平台属性</el-col>
+        <el-col :span="16">
+          <template>
+            <el-tag
+              v-for="attr in skuInfo.skuAttrValueList"
+              :key="attr.id"
+              type="success"
+              style="margin-right: 10px"
+            >
+              {{ attr.attrId }}-{{ attr.valueId }}
+            </el-tag>
+          </template>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="5">商品图片</el-col>
+        <el-col :span="16">
+          <el-carousel height="300px">
+            <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
+              <img :src="item.imgUrl" />
+            </el-carousel-item>
+          </el-carousel>
+        </el-col>
+      </el-row>
+    </el-drawer>
   </div>
 </template>
 
@@ -56,7 +96,9 @@ export default {
       page: 1,
       limit: 10,
       total: 0,
-      list: []
+      list: [],
+      skuInfo: {},
+      show: false
     }
   },
   mounted() {
@@ -103,9 +145,49 @@ export default {
     },
     developing() {
       this.$notify.info('正在开发中！')
-    }
+    },
+    // 获取sku详情
+    async getSkuInfo(sku) {
+      this.show = true
+      const result = await this.$API.sku.reqSkuById(sku.id)
+      // eslint-disable-next-line
+      if (result.code == 200) {
+        this.skuInfo = result.data
+      }
+    },
+    handleClose() {}
   }
 }
 </script>
 
-<style scoped></style>
+<style>
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+}
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
+.el-carousel__button {
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 50%;
+}
+</style>
+
+<style scoped>
+.el-row .el-col-5 {
+  font-size: 18px;
+  text-align: right;
+}
+.el-col {
+  margin: 10px 10px;
+}
+</style>
