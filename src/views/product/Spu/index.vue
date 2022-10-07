@@ -68,8 +68,12 @@
       <SkuForm v-show="scene == 2" ref="sku" @changeSceneSku="changeSceneSku" />
     </el-card>
     <!-- 查看当前Spu全部Sku列表 -->
-    <el-dialog :title="`${spu.spuName}的sku列表`" :visible.sync="dialogTableVisible">
-      <el-table :data="skuList" border style="width: 100%">
+    <el-dialog
+      :title="`${spu.spuName}的sku列表`"
+      :visible.sync="dialogTableVisible"
+      :before-close="close"
+    >
+      <el-table v-loading="loading" :data="skuList" border style="width: 100%">
         <el-table-column prop="skuName" label="名称" width="width" />
         <el-table-column prop="price" label="价格" width="width" />
         <el-table-column prop="weight" label="重量" width="width" />
@@ -104,7 +108,8 @@ export default {
       scene: 0, // 0默认：table，1：修改spu或者新增，2：新增sku
       dialogTableVisible: false,
       spu: {},
-      skuList: []
+      skuList: [],
+      loading: true
     }
   },
   methods: {
@@ -187,7 +192,16 @@ export default {
       // eslint-disable-next-line
       if (result.code == 200) {
         this.skuList = result.data
+        this.loading = false
       }
+    },
+    // 关闭对话框的回调
+    close(done) {
+      // loading 变为真
+      // 清除dialog回显效果，需要清除skuList
+      this.loading = true
+      this.skuList = []
+      done()
     }
   }
 }
