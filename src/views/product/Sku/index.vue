@@ -144,7 +144,7 @@ export default {
       }
     },
     developing() {
-      this.$notify.info('正在开发中！')
+      this.$notify.info('正在开发中')
     },
     // 获取sku详情
     async getSkuInfo(sku) {
