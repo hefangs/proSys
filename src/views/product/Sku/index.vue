@@ -184,7 +184,7 @@ export default {
 </style>
 
 <style scoped>
-/* (深度选择器 ) */
+/* (深度选择器) */
 >>> .el-carousel__button {
   width: 10px;
   height: 10px;
