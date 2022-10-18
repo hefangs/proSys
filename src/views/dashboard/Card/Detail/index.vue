@@ -57,7 +57,7 @@ export default {
   padding: 10px 0;
 }
 .card-charts {
-  height: 40px;
+  height: 50px;
 }
 .card-footer {
   border-top: 1px solid #ccc;
