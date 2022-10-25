@@ -21,7 +21,7 @@ export default {
       series: [
         {
           type: 'line',
-          data: [17, 4, 2, 5, 10, 9, 2],
+          data: [17, 4, 2, 5, 10, 9, 2, 13, 22, 1, 5, 2],
           itemStyle: {
             opacity: 0
           },
@@ -55,6 +55,9 @@ export default {
         right: 0,
         top: 0,
         bottom: 0
+      },
+      tooltip: {
+        // show: true
       }
     })
   }
