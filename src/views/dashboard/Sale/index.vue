@@ -6,7 +6,7 @@
         <el-tab-pane label="访问量" name="second">2</el-tab-pane>
       </el-tabs>
 
-      <div>1998</div>
+      <div>19998</div>
     </div>
   </el-card>
 </template>
