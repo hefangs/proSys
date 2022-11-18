@@ -14,7 +14,7 @@
         <el-date-picker
           class="date"
           type="monthrange"
-          range-separator="-"
+          range-separator="--"
           start-placeholder="开始月份"
           end-placeholder="结束月份"
           size="mini"
