@@ -65,6 +65,16 @@
               <span>肯德基</span>
               <span class="rvalue">777777</span>
             </li>
+            <li>
+              <span class="rad">7</span>
+              <span>肯德基</span>
+              <span class="rvalue">777777</span>
+            </li>
+            <li>
+              <span class="rad">7</span>
+              <span>肯德基</span>
+              <span class="rvalue">777777</span>
+            </li>
           </ul>
         </el-col>
       </el-row>
