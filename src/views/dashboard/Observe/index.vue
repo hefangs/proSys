@@ -1,6 +1,6 @@
 <template>
   <div>
-    底部的数据可视化
+    底·
     <Category />
     <Search />
   </div>
