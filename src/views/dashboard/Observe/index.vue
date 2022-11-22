@@ -1,6 +1,6 @@
 <template>
   <div>
-    底
+    底。
     <Category />
     <Search />
   </div>
