@@ -1,8 +1,13 @@
 <template>
   <div>
-    底。
-    <Category />
-    <Search />
+    <el-row :gutter="10">
+      <el-col :span="12">
+        <Search />
+      </el-col>
+      <el-col :span="12">
+        <Category />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
