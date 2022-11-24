@@ -3,7 +3,18 @@
     <div slot="header" class="header">
       <div class="search-header">
         <span>线上热门搜索</span>
-        <i class="el-icon-more" />
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            <i class="el-icon-more" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>黄金糕</el-dropdown-item>
+            <el-dropdown-item>狮子头</el-dropdown-item>
+            <el-dropdown-item>螺蛳粉</el-dropdown-item>
+            <el-dropdown-item>双皮奶</el-dropdown-item>
+            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
     <div>
@@ -32,6 +43,7 @@ export default {
 <style scoped>
 .header {
   border-bottom: 1px solid #eee;
+  padding: 5px 0;
 }
 .search-header {
   display: flex;
