@@ -33,7 +33,7 @@ export default {
       series: [
         {
           type: 'line',
-          data: [17, 4, 2, 5, 10, 9, 2, 13, 22, 23],
+          data: [17, 4, 21, 5, 10, 9, 2, 123, 22, 23],
           itemStyle: {
             opacity: 0
           },
