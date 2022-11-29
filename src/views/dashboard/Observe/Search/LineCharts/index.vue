@@ -23,54 +23,18 @@ export default {
     const lineCharts = echarts.init(this.$refs.charts)
     lineCharts.setOption({
       xAxis: {
-        show: false,
-        type: 'category'
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       },
       yAxis: {
-        show: false
-        // type: 'category'
+        type: 'value'
       },
       series: [
         {
-          type: 'line',
-          data: [17, 4, 21, 5, 10, 9, 2, 123, 22, 23],
-          itemStyle: {
-            opacity: 0
-          },
-          lineStyle: {
-            color: 'purple'
-          },
-          areaStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: 'purple' // 0% 处的颜色
-                },
-                {
-                  offset: 1,
-                  color: 'white' // 100% 处的颜色
-                }
-              ],
-              global: false // 缺省为 false
-            }
-          }
+          data: [150, 230, 224, 218, 135, 147, 260],
+          type: 'line'
         }
-      ],
-      grid: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0
-      },
-      tooltip: {
-        // show: true
-      }
+      ]
     })
   }
 }
@@ -95,6 +59,6 @@ export default {
 }
 .charts {
   width: 100%;
-  height: 100%;
+  height: 180px;
 }
 </style>

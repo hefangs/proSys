@@ -26,6 +26,20 @@
           <LineCharts />
         </el-col>
       </el-row>
+      <!-- ---table--- -->
+      <el-table :data="tableData" style="width: 100%" border>
+        <el-table-column label="排名" width="80" type="index" />
+        <el-table-column label="搜索关键字" width="180" />
+        <el-table-column label="用户数" sortable />
+        <el-table-column label="周涨幅" sortable />
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="1000"
+        style="text-align: center"
+      />
     </div>
   </el-card>
 </template>
@@ -36,6 +50,11 @@ export default {
   name: 'Search',
   components: {
     LineCharts
+  },
+  data() {
+    return {
+      tableData: [{}]
+    }
   }
 }
 </script>
