@@ -28,7 +28,7 @@ export default {
     charts.setOption({
       title: {
         text: 'Search Eng',
-        subtext: 1048,
+        subtext: 104ß,
         left: 'center',
         top: 'center'
       },
