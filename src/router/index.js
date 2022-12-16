@@ -41,25 +41,25 @@ export const constantRoutes = [
         path: 'trademark',
         name: 'TradeMark',
         component: () => import('@/views/product/tradeMark'),
-        meta: { title: '品牌管理' }
+        meta: { title: '品牌管理', icon: 'nested' }
       },
       {
         path: 'attr',
         name: 'Attr',
         component: () => import('@/views/product/Attr'),
-        meta: { title: '平台属性管理' }
+        meta: { title: '平台属性管理', icon: 'example' }
       },
       {
         path: 'sku',
         name: 'Sku',
         component: () => import('@/views/product/Sku'),
-        meta: { title: 'sku' }
+        meta: { title: 'sku', icon: 'form' }
       },
       {
         path: 'spu',
         name: 'Spu',
         component: () => import('@/views/product/Spu'),
-        meta: { title: 'spu' }
+        meta: { title: 'spu', icon: 'table' }
       }
     ]
   },

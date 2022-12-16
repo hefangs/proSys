@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div>
     <el-card style="margin: 20px 0px">
@@ -13,9 +14,7 @@
           style="margin: 20px 0px"
           :disabled="!category3Id"
           @click="addSpu"
-        >
-          添加Spu
-        </el-button>
+        >添加Spu</el-button>
         <!-- 表格 -->
         <el-table style="width: 100%" border :data="list">
           <el-table-column type="index" label="序号" width="80px" align="center" />
@@ -29,18 +28,8 @@
               <el-tooltip class="item" effect="dark" content="修改Spu" placement="bottom">
                 <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateSpu(row)" />
               </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="查看当前Spu全部Sku列表"
-                placement="bottom"
-              >
-                <el-button
-                  type="info"
-                  icon="el-icon-info"
-                  size="mini"
-                  @click="handleSkuList(row)"
-                />
+              <el-tooltip class="item" effect="dark" content="查看当前Spu全部Sku列表" placement="bottom">
+                <el-button type="info" icon="el-icon-info" size="mini" @click="handleSkuList(row)" />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除Spu" placement="bottom">
                 <el-popconfirm :title="`确定删除${row.spuName}吗？`" @onConfirm="deleteSpu(row)">
@@ -79,7 +68,7 @@
         <el-table-column prop="weight" label="重量" width="width" />
         <el-table-column label="默认图片">
           <template slot-scope="{ row }">
-            <img :src="row.skuDefaultImg" alt="" style="width: 100px; height: 100px" />
+            <img :src="row.skuDefaultImg" alt style="width: 100px; height: 100px" />
           </template>
         </el-table-column>
       </el-table>
