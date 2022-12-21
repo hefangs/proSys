@@ -38,10 +38,9 @@ import CategorySelect from '@/components/CategorySelect'
 Vue.prototype.$API = API
 
 Vue.component(CategorySelect.name, CategorySelect)
-
 new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })
