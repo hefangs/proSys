@@ -24,10 +24,10 @@
     </div>
     <div>
       <el-row :gutter="10">
-        <el-col :span="19">
+        <el-col :span="18">
           <div ref="charts" class="charts" />
         </el-col>
-        <el-col :span="5" class="right">
+        <el-col :span="6" class="right">
           <h3>门店{{ title }}排名</h3>
           <ul>
             <li>
